@@ -50,4 +50,4 @@ fi
 %files
 %defattr(644,root,root,755)
 %attr(744,root,root) /etc/rc.d/init.d/php-fcgi
-%config %attr(600,root,root) /etc/sysconfig/php-fcgi
+%config(noreplace) %attr(600,root,root) /etc/sysconfig/php-fcgi
