@@ -1,6 +1,9 @@
 # bind to tcp port 1026 on localhost, running as http:http
 SPAWNARGS="-p 1026 -u http -g http"
 
+# bind to unix-domain socket, running as http:http
+#SPAWNARGS="-s /var/run/php-fcgi.sock -u http -g http"
+
 # number of PHP childs to spawn
 PHP_FCGI_CHILDREN=5
 
