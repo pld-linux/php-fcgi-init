@@ -39,23 +39,23 @@ case "$1" in
 		export PHP_FCGI_MAX_REQUESTS
 		export FCGI_WEB_SERVER_ADDRS
 
-      msg_starting PHP FastCGI
+      msg_starting "PHP FastCGI"
       daemon /usr/sbin/spawn-fcgi $SPAWNARGS -f /usr/bin/php.fcgi -C $PHP_FCGI_CHILDREN
 
       RETVAL=$?
       [ $RETVAL -eq 0 ] && touch /var/lock/subsys/php-fcgi
    else
-      msg_already_running PHP FastCGI
+      msg_already_running "PHP FastCGI"
    fi
    ;;
   stop)
    # Stop daemons.
    if [ -f /var/lock/subsys/php-fcgi ]; then
-      msg_stopping PHP FastCGI
+      msg_stopping "PHP FastCGI"
       killproc php.fcgi
       rm -f /var/lock/subsys/php-fcgi >/dev/null 2>&1
    else
-      msg_not_running PHP FastCGI
+      msg_not_running "PHP FastCGI"
    fi
    ;;
   restart)
@@ -69,11 +69,11 @@ case "$1" in
    ;;
   reload|force-reload)
    if [ -f /var/lock/subsys/php-fcgi ]; then
-      msg_reloading PHP FastCGI
+      msg_reloading "PHP FastCGI"
       killproc php.fcgi -HUP
       RETVAL=$?
    else
-      msg_not_running PHP FastCGI >&2
+      msg_not_running "PHP FastCGI" >&2
       exit 7
    fi
    ;;
