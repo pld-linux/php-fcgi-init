@@ -35,17 +35,17 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /sbin/chkconfig --add php-fcgi
 if [ -f /var/lock/subsys/php-fcgi ]; then
-   /etc/rc.d/init.d/php-fcgi restart 1>&2
+	/etc/rc.d/init.d/php-fcgi restart 1>&2
 else
-   echo "Run \"/etc/rc.d/init.d/php-fcgi start\" to start PHP FastCGI."
+	echo "Run \"/etc/rc.d/init.d/php-fcgi start\" to start PHP FastCGI."
 fi
 
 %preun
 if [ "$1" = "0" ]; then
-   if [ -f /var/lock/subsys/php-fcgi ]; then
-      /etc/rc.d/init.d/php-fcgi stop 1>&2
-   fi
-   /sbin/chkconfig --del php-fcgi
+	if [ -f /var/lock/subsys/php-fcgi ]; then
+		/etc/rc.d/init.d/php-fcgi stop 1>&2
+	fi
+	/sbin/chkconfig --del php-fcgi
 fi
 
 %files
