@@ -4,7 +4,7 @@
 #
 # chkconfig:   2345 80 30
 # description: PHP is an interpreted language used within web pages
-# processname: spawn-fcgi
+# processname: php.fcgi
 # pidfile:  /var/run/php-fcgi.pid
 
 # Source function library.
@@ -52,7 +52,7 @@ case "$1" in
    # Stop daemons.
    if [ -f /var/lock/subsys/php-fcgi ]; then
       msg_stopping PHP FastCGI
-      killproc spawn-fcgi
+      killproc php.fcgi
       rm -f /var/lock/subsys/php-fcgi >/dev/null 2>&1
    else
       msg_not_running PHP FastCGI
@@ -70,7 +70,7 @@ case "$1" in
   reload|force-reload)
    if [ -f /var/lock/subsys/php-fcgi ]; then
       msg_reloading PHP FastCGI
-      killproc spawn-fcgi -HUP
+      killproc php.fcgi -HUP
       RETVAL=$?
    else
       msg_not_running PHP FastCGI >&2
