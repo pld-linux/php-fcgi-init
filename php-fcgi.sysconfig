@@ -1,0 +1,11 @@
+# bind to tcp port 1026 on localhost, running as http:http
+SPAWNARGS="-p 1026 -u http -g http"
+
+# number of PHP childs to spawn
+PHP_FCGI_CHILDREN=5
+
+## number of request server by a single php-process until is will be restarted
+PHP_FCGI_MAX_REQUESTS=1000
+
+# IP adresses where PHP should access server connections from
+FCGI_WEB_SERVER_ADDRS="127.0.0.1,192.168.0.1"
