@@ -7,9 +7,9 @@ License:	BSD-like
 Group:		Networking/Daemons
 Source0:	php-fcgi.init
 Source1:	php-fcgi.sysconfig
-PreReq:		rc-scripts
 Requires(post,preun):	/sbin/chkconfig
 Requires:	php-fcgi
+Requires:	rc-scripts
 Requires:	spawn-fcgi
 BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -51,4 +51,4 @@ fi
 %files
 %defattr(644,root,root,755)
 %attr(754,root,root) /etc/rc.d/init.d/php-fcgi
-%config(noreplace) %verify(not size mtime md5) %attr(600,root,root) /etc/sysconfig/php-fcgi
+%config(noreplace) %verify(not md5 mtime size) %attr(600,root,root) /etc/sysconfig/php-fcgi
