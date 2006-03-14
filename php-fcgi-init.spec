@@ -2,11 +2,12 @@ Summary:	Script to start and stop PHP FastCGI processes
 Summary(pl):	Skrypt do uruchamiania i zatrzymywania procesów FastCGI PHP
 Name:		php-fcgi-init
 Version:	0.1
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	php-fcgi.init
 Source1:	php-fcgi.sysconfig
+BuildRequires:	rpmbuild(macros) >= 1.268
 Requires(post,preun):	/sbin/chkconfig
 Requires:	php-fcgi
 Requires:	rc-scripts
@@ -34,17 +35,11 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add php-fcgi
-if [ -f /var/lock/subsys/php-fcgi ]; then
-	/etc/rc.d/init.d/php-fcgi restart 1>&2
-else
-	echo "Run \"/etc/rc.d/init.d/php-fcgi start\" to start PHP FastCGI."
-fi
+%service php-fcgi restart "PHP FastCGI"
 
 %preun
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/php-fcgi ]; then
-		/etc/rc.d/init.d/php-fcgi stop 1>&2
-	fi
+	%service php-fcgi stop
 	/sbin/chkconfig --del php-fcgi
 fi
 
