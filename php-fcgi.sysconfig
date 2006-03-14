@@ -21,3 +21,6 @@ PHP_FCGI_BINARY=/usr/bin/php.fcgi
 
 # for PHP 4.x
 #PHP_FCGI_BINARY=/usr/bin/php4.fcgi
+
+# umask 007 is useful when your web server doesn't run under same uid as php-fcgi, ie lighttpd.
+SERVICE_UMASK=007
