@@ -4,7 +4,7 @@
 #SPAWNARGS="-p 1026 -u http -g http"
 
 # Bind to unix-domain socket, running as http:http
-SPAWNARGS="-s /var/run/php-fcgi.sock -u http -g http"
+SPAWNARGS="-s /var/run/php/fcgi.sock -u http -g http"
 
 # Number of PHP childs to spawn.
 PHP_FCGI_CHILDREN=16
