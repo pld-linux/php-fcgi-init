@@ -43,7 +43,7 @@ start)
 		export FCGI_WEB_SERVER_ADDRS
 
 		msg_starting "PHP FastCGI"
-		daemon /usr/sbin/spawn-fcgi $SPAWNARGS -f $PHP_FCGI_BINARY -C $PHP_FCGI_CHILDREN
+		daemon /usr/sbin/spawn-fcgi -P /var/run/php-fcgi.pid $SPAWNARGS -f $PHP_FCGI_BINARY -C $PHP_FCGI_CHILDREN
 
 		RETVAL=$?
 		[ $RETVAL -eq 0 ] && touch /var/lock/subsys/php-fcgi
@@ -55,7 +55,7 @@ stop)
 	# Stop daemons.
 	if [ -f /var/lock/subsys/php-fcgi ]; then
 		msg_stopping "PHP FastCGI"
-		killproc php.fcgi
+		killproc --pidfile php-fcgi.pid php.fcgi
 		rm -f /var/lock/subsys/php-fcgi >/dev/null 2>&1
 	else
 		msg_not_running "PHP FastCGI"
@@ -67,7 +67,7 @@ restart)
 	exit $?
 ;;
 status)
-	status php-fcgi
+	status php-fcgi $PHP_FCGI_BINARY
 	exit $?
 ;;
 reload|force-reload)
