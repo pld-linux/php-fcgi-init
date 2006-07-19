@@ -6,16 +6,6 @@
 # Bind to unix-domain socket, running as http:http
 SPAWNARGS="-s /var/run/php/fcgi.sock -u http -g http"
 
-# Number of PHP childs to spawn.
-PHP_FCGI_CHILDREN=16
-
-# Number of requests php-process will serve until it will be restarted by
-# php-fcgi.
-PHP_FCGI_MAX_REQUESTS=100000
-
-# Comma separated IP adresses where PHP should access server connections from
-FCGI_WEB_SERVER_ADDRS="127.0.0.1"
-
 # for PHP 5.x
 PHP_FCGI_BINARY=/usr/bin/php.fcgi
 
@@ -24,3 +14,25 @@ PHP_FCGI_BINARY=/usr/bin/php.fcgi
 
 # umask 007 is useful when your web server doesn't run under same uid as php-fcgi, ie lighttpd.
 SERVICE_UMASK=007
+
+# PHP settings.
+#
+# For more information about PHP FCGI setup read:
+# /usr/share/doc/php-fcgi-*/README.FastCGI.gz
+
+# Number of PHP childs to spawn.
+#
+# This controls how many child processes the PHP process spawns.
+# default value: 8
+PHP_FCGI_CHILDREN=8
+
+# This controls how many requests each child process will handle before
+# exitting. When one process exits, another will be created. This tuning is
+# necessary because several PHP functions are known to have memory leaks. If the
+# PHP processes were left around forever, they would be become very inefficient.
+# default value: 500
+PHP_FCGI_MAX_REQUESTS=100000
+
+# FCGI_WEB_SERVER_ADDRS controls who can connect to the FastCGI.
+# Set it to a comma separated list of IP addresses to be allowed to connect from.
+FCGI_WEB_SERVER_ADDRS="127.0.0.1"
