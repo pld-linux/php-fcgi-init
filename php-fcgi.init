@@ -76,7 +76,7 @@ reload|force-reload)
 		killproc php.fcgi -HUP
 		RETVAL=$?
 	else
-		msg_not_running "PHP FastCGI" >&2
+		msg_not_running "PHP FastCGI"
 		exit 7
 	fi
 ;;
