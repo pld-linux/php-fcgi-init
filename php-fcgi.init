@@ -74,7 +74,6 @@ fcgi_spawn() {
 	args="$args ${SPAWN_SOCKET:+-s $SPAWN_SOCKET}"
 	args="$args $SPAWNARGS"
 
-	msg_starting "PHP FastCGI"
 	checkconfig
 	daemon /usr/sbin/spawn-fcgi -P /var/run/php-fcgi.pid $args -f $PHP_FCGI_BINARY -C $PHP_FCGI_CHILDREN
 	RETVAL=$?
@@ -86,7 +85,6 @@ fcgi_spawn() {
 # Removes lockfile.
 # RETVAL is not set
 fcgi_stop() {
-	msg_stopping "PHP FastCGI"
 	killproc --pidfile php-fcgi.pid ${PHP_FCGI_BINARY##*/}
 	rm -f /var/lock/subsys/php-fcgi >/dev/null 2>&1
 }
@@ -94,6 +92,7 @@ fcgi_stop() {
 start() {
 	# Start daemons.
 	if [ ! -f /var/lock/subsys/php-fcgi ]; then
+		msg_starting "PHP FastCGI"
 		fcgi_spawn
 	else
 		msg_already_running "PHP FastCGI"
@@ -103,6 +102,7 @@ start() {
 stop() {
 	# Stop daemons.
 	if [ -f /var/lock/subsys/php-fcgi ]; then
+		msg_stopping "PHP FastCGI"
 		fcgi_stop
 	else
 		msg_not_running "PHP FastCGI"
@@ -127,6 +127,7 @@ restart() {
 		[ "$SPAWN_UID" ] && chown $SPAWN_UID $SPAWN_SOCKET
 		[ "$SPAWN_GID" ] && chgrp $SPAWN_GID $SPAWN_SOCKET
 
+		msg_starting "PHP FastCGI (new)"
 		fcgi_spawn
 		if [ $RETVAL = 0 ]; then
 			# on success switch the socket and we can kill the old processes
@@ -140,6 +141,7 @@ restart() {
 
 	# Stop daemons.
 	if [ "$stop" = 1 ]; then
+		msg_stopping "PHP FastCGI (old)"
 		fcgi_stop
 		if [ -n "$newpid" ]; then
 			echo "$newpid" > /var/run/php-fcgi.pid
@@ -149,6 +151,7 @@ restart() {
 
 	# if we used socket, the new process was started before killing old one
 	if [ -z "$SPAWN_SOCKET" ]; then
+		msg_starting "PHP FastCGI (new)"
 		fcgi_spawn
 	fi
 }
