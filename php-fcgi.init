@@ -74,7 +74,6 @@ fcgi_spawn() {
 	args="$args ${SPAWN_SOCKET:+-s $SPAWN_SOCKET}"
 	args="$args $SPAWNARGS"
 
-	checkconfig
 	daemon /usr/sbin/spawn-fcgi -P /var/run/php-fcgi.pid $args -f $PHP_FCGI_BINARY -C $PHP_FCGI_CHILDREN
 	RETVAL=$?
 	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/php-fcgi
