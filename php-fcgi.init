@@ -33,10 +33,7 @@ if [ -z "$PHP_FCGI_BINARY" ]; then
 	PHP_FCGI_BINARY=/usr/bin/php.fcgi
 fi
 
-RETVAL=0
-# See how we were called.
-case "$1" in
-start)
+start() {
 	# Start daemons.
 	if [ ! -f /var/lock/subsys/php-fcgi ]; then
 		export PHP_FCGI_MAX_REQUESTS
@@ -50,8 +47,9 @@ start)
 	else
 		msg_already_running "PHP FastCGI"
 	fi
-;;
-stop)
+}
+
+stop() {
 	# Stop daemons.
 	if [ -f /var/lock/subsys/php-fcgi ]; then
 		msg_stopping "PHP FastCGI"
@@ -60,16 +58,26 @@ stop)
 	else
 		msg_not_running "PHP FastCGI"
 	fi
-;;
+}
+
+RETVAL=0
+# See how we were called.
+case "$1" in
+start)
+	start
+	;;
+stop)
+	stop
+	;;
 restart)
-	$0 stop
-	$0 start
+	stop
+	start
 	exit $?
-;;
+	;;
 status)
 	status php-fcgi $PHP_FCGI_BINARY
 	exit $?
-;;
+	;;
 reload|force-reload)
 	if [ -f /var/lock/subsys/php-fcgi ]; then
 		msg_reloading "PHP FastCGI"
@@ -79,7 +87,7 @@ reload|force-reload)
 		msg_not_running "PHP FastCGI"
 		exit 7
 	fi
-;;
+	;;
 *)
 	msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
 	exit 3
