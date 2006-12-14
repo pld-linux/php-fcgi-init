@@ -15,6 +15,9 @@ PHP_FCGI_BINARY=/usr/bin/php.fcgi
 # umask 007 is useful when your web server doesn't run under same uid as php-fcgi, ie lighttpd.
 SERVICE_UMASK=007
 
+# ulimits set before running demons (hard and soft)
+#SERVICE_LIMITS="$DEFAULT_SERVICE_LIMITS -n 16384"
+
 # PHP settings.
 #
 # For more information about PHP FCGI setup read:
