@@ -53,7 +53,7 @@ stop() {
 	# Stop daemons.
 	if [ -f /var/lock/subsys/php-fcgi ]; then
 		msg_stopping "PHP FastCGI"
-		killproc --pidfile php-fcgi.pid php.fcgi
+		killproc --pidfile php-fcgi.pid ${PHP_FCGI_BINARY##*/}
 		rm -f /var/lock/subsys/php-fcgi >/dev/null 2>&1
 	else
 		msg_not_running "PHP FastCGI"
