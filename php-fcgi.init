@@ -135,6 +135,10 @@ restart() {
 			# to prevent killing the newly spawned process we restore pid of old fcgi
 			newpid=$(cat /var/run/php-fcgi.pid)
 			echo "$oldpid" > /var/run/php-fcgi.pid
+			sleep=10
+			show "Waiting %d seconds before killing old process" $sleep
+			sleep $sleep
+			ok
 		fi
 	fi
 
