@@ -1,10 +1,19 @@
 # $Id$
-
-# Bind to tcp port 1026 on localhost, running as http:http
-#SPAWNARGS="-p 1026 -u http -g http"
+#
+# User and Group to use for spawned FCGI app.
+SPAWN_UID=http
+SPAWN_GID=http
 
 # Bind to unix-domain socket, running as http:http
-SPAWNARGS="-s /var/run/php/fcgi.sock -u http -g http"
+SPAWN_SOCKET="/var/run/php/fcgi.sock"
+
+# Bind to tcp port 1026 on localhost.
+# Address myst be IPv4 not name.
+#SPAWN_PORT="1026"
+#SPAWN_ADDR="127.0.0.1"
+
+# Additional args not covered here.
+#SPAWNARGS=""
 
 # for PHP 5.x
 PHP_FCGI_BINARY=/usr/bin/php.fcgi
