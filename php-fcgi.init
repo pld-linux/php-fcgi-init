@@ -122,7 +122,7 @@ restart() {
 	# stopping old ones, thus causing almost no downtime during restart
 	if [ "$SPAWN_SOCKET" ]; then
 		socket="$SPAWN_SOCKET"
-		SPAWN_SOCKET=$(mktemp -p ${SPAWN_SOCKET%/*} ${SPAWN_SOCKET##*/}.XXXXXX) || exit 1
+		SPAWN_SOCKET=$(TMPDIR= mktemp -p ${SPAWN_SOCKET%/*} ${SPAWN_SOCKET##*/}.XXXXXX) || exit 1
 		[ "$SPAWN_UID" ] && chown $SPAWN_UID $SPAWN_SOCKET
 		[ "$SPAWN_GID" ] && chgrp $SPAWN_GID $SPAWN_SOCKET
 
