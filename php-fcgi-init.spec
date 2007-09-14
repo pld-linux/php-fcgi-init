@@ -2,7 +2,7 @@ Summary:	Script to start and stop PHP FastCGI processes
 Summary(pl.UTF-8):	Skrypt do uruchamiania i zatrzymywania procesów FastCGI PHP
 Name:		php-fcgi-init
 Version:	0.3
-Release:	2
+Release:	3
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	php-fcgi.init
@@ -42,7 +42,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %post
 /sbin/chkconfig --add php-fcgi
-%service php-fcgi restart "PHP FastCGI"
+# there's no point of restarting php-fcgi as this package contains only scripts
 
 %preun
 if [ "$1" = "0" ]; then
