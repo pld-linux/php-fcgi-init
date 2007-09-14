@@ -34,31 +34,33 @@ if [ -z "$PHP_FCGI_BINARY" ]; then
 fi
 
 is_ipv4() {
-	echo "$1" | egrep -q '^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$'
+	echo "$1" | LC_ALL=C egrep -q '^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$'
 }
 
 is_numeric() {
-	echo "$1" | egrep -q '^[0-9]+$'
+	echo "$1" | LC_ALL=C egrep -q '^[0-9]+$'
 }
 
 checkconfig() {
+	local prog=${0##*/}
+
 	if [ -n "$SPAWN_PORT" -a -n "$SPAWN_SOCKET" ]; then
-		echo >&2 "$0: port and socket can not be used simulatenously"
+		echo >&2 "$prog: port and socket can not be used simulatenously"
 		exit 1
 	fi
 
 	if [ -n "$SPAWN_ADDR" -a -z "$SPAWN_PORT" ]; then
-		echo >&2 "$0: bind address specified but no port"
+		echo >&2 "$prog: bind address specified but no port"
 		exit 1
 	fi
 
 	if [ -n "$SPAWN_ADDR" ] && ! is_ipv4 "$SPAWN_ADDR"; then
-		echo >&2 "$0: bind address not valid ipv4 address: '$SPAWN_ADDR'"
+		echo >&2 "$prog: bind address not valid ipv4 address: '$SPAWN_ADDR'"
 		exit 1
 	fi
 
 	if [ -n "$SPAWN_PORT" ] && ! is_numeric "$SPAWN_PORT"; then
-		echo >&2 "$0: spawn port not numeric: $SPAWN_PORT"
+		echo >&2 "$prog: spawn port not numeric: $SPAWN_PORT"
 		exit 1
 	fi
 
@@ -67,13 +69,13 @@ checkconfig() {
 		IFS=,
 		for a in $FCGI_WEB_SERVER_ADDRS; do
 			if ! is_ipv4 $a; then
-				echo >&2 "$0: not an ipv4 address: $a"
+				echo >&2 "$prog: not an ipv4 address: $a"
 				err=1
 			fi
 		done
 		IFS=$ifs
 		if [ "$err" = 1 ]; then
-			echo >&2 "$0: FCGI_WEB_SERVER_ADDRS must be comma separated list of ips"
+			echo >&2 "$prog: FCGI_WEB_SERVER_ADDRS must be comma separated list of ips"
 			exit 1
 		fi
 	fi
