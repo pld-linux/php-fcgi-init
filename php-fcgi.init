@@ -33,6 +33,14 @@ if [ -z "$PHP_FCGI_BINARY" ]; then
 	PHP_FCGI_BINARY=/usr/bin/php.fcgi
 fi
 
+is_ipv4() {
+	echo "$1" | egrep -q '^([1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])(\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])){3}$'
+}
+
+is_numeric() {
+	echo "$1" | egrep -q '^[0-9]+$'
+}
+
 checkconfig() {
 	if [ -n "$SPAWN_PORT" -a -n "$SPAWN_SOCKET" ]; then
 		echo >&2 "$0: port and socket can not be used simulatenously"
@@ -44,14 +52,30 @@ checkconfig() {
 		exit 1
 	fi
 
-	if [ -n "$SPAWN_ADDR" ] && [[ $SPAWN_ADDR != [0-9]*.[0-9]*.[0-9]*.[0-9]* ]]; then
-		echo >&2 "$0: bind address not valid ipv6 address: '$SPAWN_ADDR'"
+	if [ -n "$SPAWN_ADDR" ] && ! is_ipv4 "$SPAWN_ADDR"; then
+		echo >&2 "$0: bind address not valid ipv4 address: '$SPAWN_ADDR'"
 		exit 1
 	fi
 
-	if [ -n "$SPAWN_PORT" ] && [[ $SPAWN_PORT != [0-9]* ]]; then
+	if [ -n "$SPAWN_PORT" ] && ! is_numeric "$SPAWN_PORT"; then
 		echo >&2 "$0: spawn port not numeric: $SPAWN_PORT"
 		exit 1
+	fi
+
+	if [ -n "$FCGI_WEB_SERVER_ADDRS" ]; then
+		local a err ifs=$IFS
+		IFS=,
+		for a in $FCGI_WEB_SERVER_ADDRS; do
+			if ! is_ipv4 $a; then
+				echo >&2 "$0: not an ipv4 address: $a"
+				err=1
+			fi
+		done
+		IFS=$ifs
+		if [ "$err" = 1 ]; then
+			echo >&2 "$0: FCGI_WEB_SERVER_ADDRS must be comma separated list of ips"
+			exit 1
+		fi
 	fi
 }
 
@@ -169,23 +193,13 @@ start)
 stop)
 	stop
 	;;
-restart)
+restart|reload|force-reload)
 	checkconfig
 	restart
 	;;
 status)
 	status php-fcgi $PHP_FCGI_BINARY
 	exit $?
-	;;
-reload|force-reload)
-	if [ -f /var/lock/subsys/php-fcgi ]; then
-		msg_reloading "PHP FastCGI"
-		killproc --pidfile php-fcgi.pid ${PHP_FCGI_BINARY##*/}
-		RETVAL=$?
-	else
-		msg_not_running "PHP FastCGI"
-		exit 7
-	fi
 	;;
 *)
 	msg_usage "$0 {start|stop|restart|reload|force-reload|status}"
