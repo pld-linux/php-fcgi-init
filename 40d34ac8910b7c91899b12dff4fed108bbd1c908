@@ -1,0 +1,3 @@
+- real reload is not implemented: do restart
+- validate ip SPAWN_ADDR and SPAWN_PORT properly
+- validate FCGI_WEB_SERVER_ADDRS
