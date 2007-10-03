@@ -201,7 +201,20 @@ restart|force-reload)
 	;;
 status)
 	status php-fcgi $PHP_FCGI_BINARY
-	exit $?
+	RETVAL=$?
+	echo "Configured settings:"
+	echo " PHP_FCGI_CHILDREN=$PHP_FCGI_CHILDREN"
+	echo " FCGI_WEB_SERVER_ADDRS=$FCGI_WEB_SERVER_ADDRS"
+	echo " PHP_FCGI_MAX_REQUESTS=$PHP_FCGI_MAX_REQUESTS"
+	pid=$(cat /var/run/php-fcgi.pid 2>/dev/null)
+	if [ -f "/proc/$pid/environ" ]; then
+		echo "Running settings:"
+		tr '\0' '\n' < /proc/$pid/environ | awk -F= '
+			$1 == "PHP_FCGI_CHILDREN" { print " "$0 }
+			$1 == "FCGI_WEB_SERVER_ADDRS" { print " "$0 }
+			$1 == "PHP_FCGI_MAX_REQUESTS" { print " "$0 }
+		'
+	fi
 	;;
 *)
 	msg_usage "$0 {start|stop|restart|force-reload|status}"
