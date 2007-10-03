@@ -1,8 +1,8 @@
 Summary:	Script to start and stop PHP FastCGI processes
 Summary(pl.UTF-8):	Skrypt do uruchamiania i zatrzymywania procesów FastCGI PHP
 Name:		php-fcgi-init
-Version:	0.3
-Release:	3
+Version:	0.4
+Release:	1
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	php-fcgi.init
