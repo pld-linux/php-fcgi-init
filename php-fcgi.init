@@ -100,9 +100,14 @@ fcgi_spawn() {
 	args="$args ${SPAWN_SOCKET:+-s $SPAWN_SOCKET}"
 	args="$args $SPAWNARGS"
 
-	daemon /usr/sbin/spawn-fcgi -P /var/run/php-fcgi.pid $args -f $PHP_FCGI_BINARY -C $PHP_FCGI_CHILDREN
+	/usr/sbin/spawn-fcgi -P /var/run/php-fcgi.pid $args -f $PHP_FCGI_BINARY -C $PHP_FCGI_CHILDREN 2> /dev/null
 	RETVAL=$?
-	[ $RETVAL -eq 0 ] && touch /var/lock/subsys/php-fcgi
+	if [ $RETVAL -eq 0 ]; then
+		ok
+	   	touch /var/lock/subsys/php-fcgi
+	else
+		fail
+	fi
 }
 
 # Stops FCGI.
@@ -135,13 +140,12 @@ stop() {
 }
 
 restart() {
-
 	local stop socket oldpid newpid
 
 	# we need to know about stopping before we start
 	if [ -f /var/lock/subsys/php-fcgi ]; then
 		stop=1
-		oldpid=$(cat /var/run/php-fcgi.pid)
+		read oldpid 2>/dev/null </var/run/php-fcgi.pid
 	fi
 
 	# so if we're using local sockets, we can create the new processes before
@@ -159,12 +163,8 @@ restart() {
 			mv -f "$SPAWN_SOCKET" "$socket"
 
 			# to prevent killing the newly spawned process we restore pid of old fcgi
-			newpid=$(cat /var/run/php-fcgi.pid)
+			read newpid 2>/dev/null </var/run/php-fcgi.pid
 			echo "$oldpid" > /var/run/php-fcgi.pid
-			sleep=10
-			show "Waiting %d seconds before killing old process" $sleep
-			sleep $sleep
-			ok
 		fi
 	fi
 
@@ -206,7 +206,7 @@ status)
 	echo " PHP_FCGI_CHILDREN=$PHP_FCGI_CHILDREN"
 	echo " FCGI_WEB_SERVER_ADDRS=$FCGI_WEB_SERVER_ADDRS"
 	echo " PHP_FCGI_MAX_REQUESTS=$PHP_FCGI_MAX_REQUESTS"
-	pid=$(cat /var/run/php-fcgi.pid 2>/dev/null)
+	read pid 2>/dev/null </var/run/php-fcgi.pid
 	if [ -f "/proc/$pid/environ" ]; then
 		echo "Running settings:"
 		tr '\0' '\n' < /proc/$pid/environ | awk -F= '
