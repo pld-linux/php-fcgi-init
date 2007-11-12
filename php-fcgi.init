@@ -100,7 +100,7 @@ fcgi_spawn() {
 	args="$args ${SPAWN_SOCKET:+-s $SPAWN_SOCKET}"
 	args="$args $SPAWNARGS"
 
-	/usr/sbin/spawn-fcgi -P /var/run/php-fcgi.pid $args -f $PHP_FCGI_BINARY -C $PHP_FCGI_CHILDREN 2> /dev/null
+	env -i PATH=$PATH /usr/sbin/spawn-fcgi -P /var/run/php-fcgi.pid $args -f $PHP_FCGI_BINARY -C $PHP_FCGI_CHILDREN 2> /dev/null
 	RETVAL=$?
 	if [ $RETVAL -eq 0 ]; then
 		ok
