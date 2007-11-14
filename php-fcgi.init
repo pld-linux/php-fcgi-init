@@ -44,6 +44,11 @@ is_numeric() {
 checkconfig() {
 	local prog=${0##*/}
 
+	if [ ! -x "$PHP_FCGI_BINARY" ]; then
+		echo >&2 "$prog: PHP FCGI binary '$PHP_FCGI_BINARY' doesn't exist"
+		exit 1
+	fi
+
 	if [ -n "$SPAWN_PORT" -a -n "$SPAWN_SOCKET" ]; then
 		echo >&2 "$prog: port and socket can not be used simulatenously"
 		exit 1
