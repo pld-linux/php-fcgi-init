@@ -109,14 +109,16 @@ fcgi_spawn() {
 	[ -z "$DEFAULT_SERVICE_UMASK" ] && DEFAULT_SERVICE_UMASK=022
 	umask ${SERVICE_UMASK:-$DEFAULT_SERVICE_UMASK}
 
-	env -i PATH=$PATH /usr/sbin/spawn-fcgi -P /var/run/php-fcgi.pid $args -f $PHP_FCGI_BINARY -C $PHP_FCGI_CHILDREN 2> /dev/null
+	env -i PATH=$PATH /usr/sbin/spawn-fcgi -P /var/run/php-fcgi.pid $args -C $PHP_FCGI_CHILDREN -- $PHP_FCGI_BINARY > /dev/null
 	RETVAL=$?
+
 	if [ $RETVAL -eq 0 ]; then
 		ok
 	   	touch /var/lock/subsys/php-fcgi
 	else
 		fail
 	fi
+
 }
 
 # Stops FCGI.
