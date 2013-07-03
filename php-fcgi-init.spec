@@ -2,7 +2,7 @@ Summary:	Script to start and stop PHP FastCGI processes
 Summary(pl.UTF-8):	Skrypt do uruchamiania i zatrzymywania procesów FastCGI PHP
 Name:		php-fcgi-init
 Version:	0.6
-Release:	1
+Release:	2
 License:	BSD-like
 Group:		Networking/Daemons
 Source0:	php-fcgi.init
@@ -12,7 +12,7 @@ Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/userdel
 Requires(pre):	/bin/id
 Requires(pre):	/usr/sbin/useradd
-Requires:	php-fcgi
+Requires:	php(fcgi)
 Requires:	rc-scripts
 Requires:	spawn-fcgi >= 1.4.19-9
 Provides:	user(http)
@@ -30,9 +30,8 @@ Skrypt do uruchamiania i zatrzymywania procesów FastCGI PHP
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT/etc/{rc.d/init.d,sysconfig}
-
-install %{SOURCE0} $RPM_BUILD_ROOT/etc/rc.d/init.d/php-fcgi
-install %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/php-fcgi
+install -p %{SOURCE0} $RPM_BUILD_ROOT/etc/rc.d/init.d/php-fcgi
+cp -p %{SOURCE1} $RPM_BUILD_ROOT/etc/sysconfig/php-fcgi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -43,6 +42,7 @@ rm -rf $RPM_BUILD_ROOT
 %post
 /sbin/chkconfig --add php-fcgi
 # there's no point of restarting php-fcgi as this package contains only scripts
+# therefore nothing has changed in memory and restart would be pointless
 
 %preun
 if [ "$1" = "0" ]; then
